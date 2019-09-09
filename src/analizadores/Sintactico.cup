@@ -1,0 +1,127 @@
+package analizadores;
+
+import java_cup.runtime.*;
+import global.Nodo;
+
+parser code 
+{:
+    public Nodo raiz;
+
+    public void syntax_error(Symbol s){ 
+        System.err.println("Error sintáctico en la Línea: " + (s.left + 1) + ", Columna: " + (s.right + 1) + ". No se esperaba este componente: " + s.value + "."); 
+    } 
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        System.err.println("Error sintáctico irrecuperable en la Línea: " + (s.left + 1) + ", Columna " + (s.right + 1) + ". Componente " + s.value + " no reconocido.");
+    }
+
+:} 
+
+/* Terminales */
+terminal String llaa, llac, para, parc, igual, puntoycoma;
+terminal String tint, tdouble, tstring;
+terminal String cadena, entero, doble, identificador;
+terminal String print, repetir;
+  
+/* No terminales */
+non terminal Nodo INICIO, BLOQUE, L_INSTRUCCIONES, INSTRUCCION, DECLARACION, TIPO, E, IMPRIMIR, REPET;
+
+start with INICIO; 
+
+/* Funcionalidad */
+INICIO          ::=     BLOQUE:a
+                        {: 
+                            Nodo padre = new Nodo("S", "");
+                            padre.agregarHijo(a);
+                            parser.raiz = padre;
+                        :};
+
+BLOQUE          ::=     llaa llac
+                        {: 
+                            RESULT = new Nodo("BLOQUE", "");    
+                        :}
+                |       llaa L_INSTRUCCIONES:a llac
+                        {: 
+                            RESULT = new Nodo("BLOQUE", ""); 
+                            RESULT.agregarHijo(a);
+                        :};
+
+L_INSTRUCCIONES ::=     L_INSTRUCCIONES:a INSTRUCCION:b
+                        {: 
+                            RESULT = new Nodo("L_INSTRUCCIONES", ""); 
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       INSTRUCCION:a
+                        {: 
+                            RESULT = new Nodo("L_INSTRUCCIONES", ""); 
+                            RESULT.agregarHijo(a);
+                        :};
+
+INSTRUCCION     ::=     BLOQUE:a 
+                        {: 
+                            RESULT = a;
+                        :}
+                |       DECLARACION:a
+                        {: 
+                            RESULT = a;
+                        :}
+                |       IMPRIMIR:a
+                        {: 
+                            RESULT = a;
+                        :}
+                |       REPET:a
+                        {: 
+                            RESULT = a;
+                        :};
+
+DECLARACION     ::=     TIPO:a identificador:b igual E:c puntoycoma
+                        {: 
+                            RESULT = new Nodo("DECLARACION", "", bleft, bright); 
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(new Nodo("ID", b)); 
+                            RESULT.agregarHijo(c);
+                        :};
+
+TIPO            ::=     tint:a
+                        {: 
+                            RESULT = new Nodo("TIPO", a);
+                        :}
+                |       tdouble:a
+                        {: 
+                            RESULT = new Nodo("TIPO", a);
+                        :}
+                |       tstring:a
+                        {: 
+                            RESULT = new Nodo("TIPO", a);
+                        :};
+
+E               ::=     entero:a
+                        {: 
+                            RESULT = new Nodo("ENTERO", a, aleft, aright); 
+                        :}
+                |       doble:a
+                        {: 
+                            RESULT = new Nodo("DOBLE", a, aleft, aright); 
+                        :}
+                |       cadena:a
+                        {: 
+                            RESULT = new Nodo("CADENA", a, aleft, aright); 
+                        :}
+                |       identificador:a
+                        {: 
+                            RESULT = new Nodo("ID", a, aleft, aright); 
+                        :};
+
+IMPRIMIR        ::=     print para E:a parc puntoycoma
+                        {: 
+                            RESULT = new Nodo("IMPRIMIR", ""); 
+                            RESULT.agregarHijo(a);
+                        :};
+
+REPET           ::=     repetir:rep para E:a parc BLOQUE:b
+                        {: 
+                            RESULT = new Nodo("REPETIR", "", repleft, repright); 
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :};

@@ -1,0 +1,37 @@
+{
+	int a = 10;
+	double b = 10.9772;
+
+	{
+		
+		
+
+		{
+			String c = "Compiladores 1";
+			print(b); //10.9772
+			print(c); //Compiladores 1
+		}
+
+		print(c); //Error, la variable NO existe
+
+	}
+
+	{
+		int a = 1024;
+
+		{
+			
+			{
+				{
+					{
+						int a = 97;
+					}
+				}
+			}
+		}
+
+		print(a); //1024
+	}
+
+	print(a); //10
+}
