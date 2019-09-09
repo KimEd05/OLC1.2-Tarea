@@ -19,12 +19,27 @@ parser code
 
 /* Terminales */
 terminal String llaa, llac, para, parc, igual, puntoycoma;
-terminal String tint, tdouble, tstring;
-terminal String cadena, entero, doble, identificador;
+terminal String mas, menos, por, dividido, pow;
+terminal String igualdad, desigualdad, mayor, menor, mayorigual, menorigual;
+terminal String tand, tor, xor, not;
+terminal String tboolean, tchar, tint, tdouble, tstring;
+terminal String booleano, caracter, cadena, entero, doble, identificador;
 terminal String print, repetir;
   
 /* No terminales */
 non terminal Nodo INICIO, BLOQUE, L_INSTRUCCIONES, INSTRUCCION, DECLARACION, TIPO, E, IMPRIMIR, REPET;
+non terminal Nodo CONDICION, RELACION, SIGNO_REL, VALOR;
+
+/* Precedencia */
+precedence left mas, menos;
+precedence left por, dividido;
+precedence nonassoc pow;
+precedence left para, parc;
+precedence left igualdad, desigualdad, menor, menorigual, mayor, mayorigual;
+precedence left not;
+precedence left xor;
+precedence left tor;
+precedence left tand;
 
 start with INICIO; 
 
@@ -75,7 +90,7 @@ INSTRUCCION     ::=     BLOQUE:a
                             RESULT = a;
                         :};
 
-DECLARACION     ::=     TIPO:a identificador:b igual E:c puntoycoma
+DECLARACION     ::=     TIPO:a identificador:b igual CONDICION:c puntoycoma
                         {: 
                             RESULT = new Nodo("DECLARACION", "", bleft, bright); 
                             RESULT.agregarHijo(a);
@@ -83,7 +98,15 @@ DECLARACION     ::=     TIPO:a identificador:b igual E:c puntoycoma
                             RESULT.agregarHijo(c);
                         :};
 
-TIPO            ::=     tint:a
+TIPO            ::=     tboolean:a
+                        {: 
+                            RESULT = new Nodo("TIPO", a);
+                        :}
+                |       tchar:a
+                        {: 
+                            RESULT = new Nodo("TIPO", a);
+                        :}
+                |       tint:a
                         {: 
                             RESULT = new Nodo("TIPO", a);
                         :}
@@ -96,7 +119,153 @@ TIPO            ::=     tint:a
                             RESULT = new Nodo("TIPO", a);
                         :};
 
-E               ::=     entero:a
+CONDICION       ::=     CONDICION:a tand:tkn CONDICION:b  
+                        {:  
+                            RESULT = new Nodo("&&", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       CONDICION:a tor:tkn CONDICION:b
+                        {:  
+                            RESULT = new Nodo("||", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       CONDICION:a xor:tkn CONDICION:b 
+                        {:  
+                            RESULT = new Nodo("^", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       not:tkn para CONDICION:a parc  
+                        {:  
+                            RESULT = new Nodo("!", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                        :}
+                |       RELACION:a  
+                        {:  
+                            RESULT = a;
+                        :};
+
+RELACION        ::=     VALOR:a SIGNO_REL:b VALOR:c  
+                        {:  
+                            RESULT = b;
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(c);
+                        :}
+                |       para VALOR:a SIGNO_REL:b VALOR:c parc  
+                        {:  
+                            RESULT = b;
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(c);
+                        :}
+                |       para booleano:a parc 
+                        {:  
+                            RESULT = new Nodo("BOOLEANO", a, aleft, aright);
+                        :}
+                |       not:tkn identificador:a 
+                        {:  
+                            RESULT = new Nodo("!", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(new Nodo("ID", a, aleft, aright));
+                        :}
+                |       not:tkn booleano:a  
+                        {:  
+                            RESULT = new Nodo("!", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(new Nodo("BOOLEANO", a, aleft, aright));
+                        :}
+                |       para CONDICION:a parc 
+                        {:  
+                            RESULT = a;
+                        :}
+                |       VALOR:a 
+                        {:  
+                            RESULT = a;
+                        :};
+
+SIGNO_REL       ::=     igualdad:tkn  
+                        {:  
+                            RESULT = new Nodo("==", tkn, tknleft, tknright);
+                        :}
+                |       desigualdad:tkn  
+                        {:  
+                            RESULT = new Nodo("!=", tkn, tknleft, tknright);
+                        :}
+                |       mayor:tkn  
+                        {:  
+                            RESULT = new Nodo(">", tkn, tknleft, tknright);
+                        :}
+                |       menor:tkn 
+                        {:  
+                            RESULT = new Nodo("<", tkn, tknleft, tknright);
+                        :}
+                |       mayorigual:tkn  
+                        {:  
+                            RESULT = new Nodo(">=", tkn, tknleft, tknright);
+                        :}
+                |       menorigual:tkn
+                        {:  
+                            RESULT = new Nodo("<=", tkn, tknleft, tknright);
+                        :};
+
+VALOR           ::=     VALOR:a mas:tkn VALOR:b
+                        {:  
+                            RESULT = new Nodo("+", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       VALOR:a menos:tkn VALOR:b 
+                        {:  
+                            RESULT = new Nodo("-", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       VALOR:a por:tkn VALOR:b
+                        {:  
+                            RESULT = new Nodo("*", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       VALOR:a dividido:tkn VALOR:b  
+                        {:  
+                            RESULT = new Nodo("/", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       VALOR:a pow:tkn VALOR:b 
+                        {:  
+                            RESULT = new Nodo("POW", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       VALOR:a para:tkn VALOR:b parc  
+                        {:  
+                            RESULT = new Nodo("*", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       para VALOR:a parc  
+                        {:  
+                            RESULT = a;
+                        :}
+                |       menos:a VALOR:b  
+                        {:  
+                            RESULT = new Nodo("-", a, aleft, aright);
+                            RESULT.agregarHijo(b);
+                        :}
+                |       E:a  
+                        {:  
+                            RESULT = a;
+                        :};
+
+E               ::=     booleano:a
+                        {: 
+                            RESULT = new Nodo("BOOLEANO", a, aleft, aright); 
+                        :}
+                |       caracter:a
+                        {: 
+                            RESULT = new Nodo("CARACTER", a, aleft, aright); 
+                        :}
+                |       entero:a
                         {: 
                             RESULT = new Nodo("ENTERO", a, aleft, aright); 
                         :}
@@ -113,13 +282,13 @@ E               ::=     entero:a
                             RESULT = new Nodo("ID", a, aleft, aright); 
                         :};
 
-IMPRIMIR        ::=     print para E:a parc puntoycoma
+IMPRIMIR        ::=     print para CONDICION:a parc puntoycoma
                         {: 
                             RESULT = new Nodo("IMPRIMIR", ""); 
                             RESULT.agregarHijo(a);
                         :};
 
-REPET           ::=     repetir:rep para E:a parc BLOQUE:b
+REPET           ::=     repetir:rep para CONDICION:a parc BLOQUE:b
                         {: 
                             RESULT = new Nodo("REPETIR", "", repleft, repright); 
                             RESULT.agregarHijo(a);

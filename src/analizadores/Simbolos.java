@@ -8,23 +8,42 @@ package analizadores;
 /** CUP generated class containing symbol constants. */
 public class Simbolos {
   /* terminals */
-  public static final int print = 15;
-  public static final int tint = 8;
+  public static final int tboolean = 23;
   public static final int llac = 3;
-  public static final int cadena = 11;
+  public static final int tor = 20;
   public static final int llaa = 2;
-  public static final int repetir = 16;
-  public static final int tstring = 10;
-  public static final int EOF = 0;
-  public static final int entero = 12;
-  public static final int puntoycoma = 7;
-  public static final int doble = 13;
-  public static final int error = 1;
-  public static final int tdouble = 9;
-  public static final int parc = 5;
-  public static final int identificador = 14;
   public static final int igual = 6;
+  public static final int identificador = 33;
+  public static final int caracter = 29;
+  public static final int repetir = 35;
+  public static final int tint = 25;
+  public static final int dividido = 11;
+  public static final int igualdad = 13;
+  public static final int puntoycoma = 7;
+  public static final int tand = 19;
+  public static final int menos = 9;
+  public static final int menor = 16;
+  public static final int EOF = 0;
+  public static final int parc = 5;
+  public static final int mas = 8;
   public static final int para = 4;
+  public static final int error = 1;
+  public static final int doble = 32;
+  public static final int mayor = 15;
+  public static final int tstring = 27;
+  public static final int pow = 12;
+  public static final int entero = 31;
+  public static final int menorigual = 18;
+  public static final int por = 10;
+  public static final int xor = 21;
+  public static final int mayorigual = 17;
+  public static final int not = 22;
+  public static final int booleano = 28;
+  public static final int print = 34;
+  public static final int tdouble = 26;
+  public static final int cadena = 30;
+  public static final int tchar = 24;
+  public static final int desigualdad = 14;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -34,9 +53,28 @@ public class Simbolos {
   "parc",
   "igual",
   "puntoycoma",
+  "mas",
+  "menos",
+  "por",
+  "dividido",
+  "pow",
+  "igualdad",
+  "desigualdad",
+  "mayor",
+  "menor",
+  "mayorigual",
+  "menorigual",
+  "tand",
+  "tor",
+  "xor",
+  "not",
+  "tboolean",
+  "tchar",
   "tint",
   "tdouble",
   "tstring",
+  "booleano",
+  "caracter",
   "cadena",
   "entero",
   "doble",
