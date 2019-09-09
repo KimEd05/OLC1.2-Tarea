@@ -1,10 +1,13 @@
 {
-	int a = 10;
+	boolean boo = 'a' < 'b' && !true;
+	double a = 'a' pow 2.0;
+	double rest = 500 - a;
 	double b = 10.9772;
-
+	char w = 'A';
 	{
 		
-		
+		String mensaje = "****** Suma ******";
+		print(mensaje); 
 
 		{
 			String c = "Compiladores 1";
@@ -12,7 +15,15 @@
 			print(c); //Compiladores 1
 		}
 
-		print(c); //Error, la variable NO existe
+		print(w); //Error, la variable NO existe
+		String msg = "****** Resta ******";
+		print(msg); 
+		print(rest);
+		
+
+		String mesg = "****** == ******";
+		print(mesg); 
+		print(boo);
 
 	}
 

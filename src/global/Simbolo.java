@@ -20,6 +20,6 @@ public class Simbolo {
     }
     
     public enum EnumTipo {
-        entero, doble, cadena, error
+        booleano, caracter, entero, doble, cadena, error
     }
 }
