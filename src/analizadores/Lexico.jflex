@@ -53,7 +53,7 @@ comentarioMulti = "/*" ~"*/"
 ">="                { return new Symbol(Simbolos.mayorigual, yyline, yycolumn, yytext()); }
 "<="                { return new Symbol(Simbolos.menorigual, yyline, yycolumn, yytext()); }
 "&&"                { return new Symbol(Simbolos.tand, yyline, yycolumn, yytext()); }
-"||"                { return new Symbol(Simbolos.tor, yyline, yycolumn, yytext()); }
+"¬¬"                { return new Symbol(Simbolos.tor, yyline, yycolumn, yytext()); }
 "^"                 { return new Symbol(Simbolos.xor, yyline, yycolumn, yytext()); }
 "!"                 { return new Symbol(Simbolos.not, yyline, yycolumn, yytext()); }
 

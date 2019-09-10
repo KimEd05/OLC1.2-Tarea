@@ -85,6 +85,8 @@ public class Ejecutor {
         
         if(resultado.tipo != Simbolo.EnumTipo.error) {
             System.out.println(resultado.valor);
+        } else {
+            System.err.println(resultado.error);
         }
     }
     
@@ -186,7 +188,7 @@ public class Ejecutor {
                 Expresion hijoDerecho = resolverExpresion(raiz.hijos.get(1), ent);
                 
                 int tipo[][] =  {
-                                    {-1, -1, -1, -1, -1},
+                                    {1, -1, -1, -1, -1},
                                     {-1, 1, 1, 1, -1},
                                     {-1, 1, 1, 1, -1},
                                     {-1, 1, 1, 1, -1},
@@ -213,7 +215,7 @@ public class Ejecutor {
                 Expresion hijoDerecho = resolverExpresion(raiz.hijos.get(1), ent);
                 
                 int tipo[][] =  {
-                                    {-1, -1, -1, -1, -1},
+                                    {1, -1, -1, -1, -1},
                                     {-1, 1, 1, 1, -1},
                                     {-1, 1, 1, 1, -1},
                                     {-1, 1, 1, 1, -1},
@@ -303,7 +305,16 @@ public class Ejecutor {
                 Expresion hijoIzquierdo = resolverExpresion(raiz.hijos.get(0), ent);
                 
                 if(raiz.hijos.size() == 1) {
-                    
+                    if(Simbolo.EnumTipo.caracter == hijoIzquierdo.tipo) {
+                        int resultado = 0 - hijoIzquierdo.valor.toString().charAt(0);
+                        retorno = new Expresion(Simbolo.EnumTipo.caracter, resultado);
+                    } else if(Simbolo.EnumTipo.entero == hijoIzquierdo.tipo) {
+                        int resultado = 0 - Integer.parseInt(hijoIzquierdo.valor.toString());
+                        retorno = new Expresion(Simbolo.EnumTipo.caracter, resultado);
+                    } else if(Simbolo.EnumTipo.doble == hijoIzquierdo.tipo) {
+                        double resultado = 0 - Double.parseDouble(hijoIzquierdo.valor.toString());
+                        retorno = new Expresion(Simbolo.EnumTipo.caracter, resultado);
+                    } 
                 } else if(raiz.hijos.size() == 2) {
                     Expresion hijoDerecho = resolverExpresion(raiz.hijos.get(1), ent);
                     int tipo[][] =  {
@@ -335,8 +346,13 @@ public class Ejecutor {
 
                 int fila = intTipo(hijoIzquierdo.tipo);
                 int columna = intTipo(hijoDerecho.tipo);
-
-                retorno = new Expresion(enumTipo(tipo[fila][columna]), multiplicacion(fila, columna, hijoIzquierdo, hijoDerecho));
+                
+                if(tipo[fila][columna] != -1) {
+                    retorno = new Expresion(enumTipo(tipo[fila][columna]), multiplicacion(fila, columna, hijoIzquierdo, hijoDerecho));
+                } else {
+                    retorno = new Expresion(Simbolo.EnumTipo.error, "Error", "No se puede multiplicar '" + hijoIzquierdo.tipo + "' con '" + hijoDerecho.tipo + "' Fila: " + raiz.hijos.get(0).linea + " Columna: " + (raiz.hijos.get(0).columna + 1) + ".");
+                }
+                
             }
                 break;
             case "/":
@@ -357,7 +373,7 @@ public class Ejecutor {
 
                     retorno = new Expresion(enumTipo(tipo[fila][columna]), division(fila, columna, hijoIzquierdo, hijoDerecho));
                 } else {
-                    retorno = new Expresion(Simbolo.EnumTipo.error, "Error");
+                    retorno = new Expresion(Simbolo.EnumTipo.error, "Error", "No se puede dividir '" + hijoIzquierdo.tipo + "' entre 0. Indefinido. Fila: " + raiz.hijos.get(0).linea + " Columna: " + (raiz.hijos.get(0).columna + 1) + ".");
                 }
             }
                 break;

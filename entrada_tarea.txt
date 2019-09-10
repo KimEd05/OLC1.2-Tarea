@@ -1,0 +1,25 @@
+{
+        String var1 = "Compiladores1";
+        String var2 = "compiladores1";
+        
+        print("El resultado es : "+(!!!!true==false || var1 != var2));
+        
+        print(4+5*1587/18651+418*14 + " : Salida");
+        print((4+5>9*6&&true) + " : Salida "+var2);
+        print(!(22*5/3*2<100||false!=(52*6<=36)) + " : Salida");
+        print("Salida: "+(var1!=var2||false&&!!!true^!true));
+}
+
+
+/**
+*
+*
+*El resultado es : true
+*5856 : Salida
+*false : Salida compiladores1
+*false : Salida
+*Salida: true
+*
+*/
+        
+        

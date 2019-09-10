@@ -1,0 +1,11 @@
+{
+    int a = 2*2;
+    double b = -19371 + -72618 * 8 * 7 - 4 + ( 4 pow a);
+    int c = -5 - 14 * 13 - 1582 * (81 - 172);
+    String d = "Resultado ---> " + 4 * 15 / 2;
+    print(b); //-86865
+    print(c); //143775
+    print(d); //Resultado --> 30
+    print ( c / 0 ); //Errores
+    print ( a * d ); //Errores
+}

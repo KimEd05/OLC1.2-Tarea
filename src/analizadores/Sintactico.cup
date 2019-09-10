@@ -28,18 +28,18 @@ terminal String print, repetir;
   
 /* No terminales */
 non terminal Nodo INICIO, BLOQUE, L_INSTRUCCIONES, INSTRUCCION, DECLARACION, TIPO, E, IMPRIMIR, REPET;
-non terminal Nodo CONDICION, RELACION, SIGNO_REL, VALOR;
+non terminal Nodo CONDICION, RELACION, VALOR;
 
 /* Precedencia */
-precedence left mas, menos;
-precedence left por, dividido;
-precedence nonassoc pow;
-precedence left para, parc;
-precedence left igualdad, desigualdad, menor, menorigual, mayor, mayorigual;
-precedence left not;
-precedence left xor;
 precedence left tor;
 precedence left tand;
+precedence left xor;
+precedence nonassoc igualdad, desigualdad, menor, menorigual, mayor, mayorigual;
+precedence left mas, menos;
+precedence left por, dividido;
+precedence right para, parc;
+precedence nonassoc pow;
+precedence right not;
 
 start with INICIO; 
 
@@ -137,120 +137,101 @@ CONDICION       ::=     CONDICION:a tand:tkn CONDICION:b
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(b);
                         :}
-                |       not:tkn para CONDICION:a parc  
+                |       not:tkn CONDICION:a 
                         {:  
                             RESULT = new Nodo("!", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
+                        :}
+                |       para CONDICION:a parc 
+                        {:  
+                            RESULT = a;
                         :}
                 |       RELACION:a  
                         {:  
                             RESULT = a;
                         :};
 
-RELACION        ::=     VALOR:a SIGNO_REL:b VALOR:c  
+RELACION        ::=     CONDICION:a igualdad:tkn CONDICION:c 
                         {:  
-                            RESULT = b;
+                            RESULT = new Nodo("==", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(c);
                         :}
-                |       para VALOR:a SIGNO_REL:b VALOR:c parc  
+                |       CONDICION:a desigualdad:tkn CONDICION:c  
                         {:  
-                            RESULT = b;
+                            RESULT = new Nodo("!=", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(c);
                         :}
-                |       para booleano:a parc 
+                |       CONDICION:a mayor:tkn CONDICION:c  
                         {:  
-                            RESULT = new Nodo("BOOLEANO", a, aleft, aright);
+                            RESULT = new Nodo(">", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(c);
                         :}
-                |       not:tkn identificador:a 
+                |       CONDICION:a menor:tkn CONDICION:c 
                         {:  
-                            RESULT = new Nodo("!", tkn, tknleft, tknright);
-                            RESULT.agregarHijo(new Nodo("ID", a, aleft, aright));
+                            RESULT = new Nodo("<", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(c);
                         :}
-                |       not:tkn booleano:a  
+                |       CONDICION:a mayorigual:tkn CONDICION:c  
                         {:  
-                            RESULT = new Nodo("!", tkn, tknleft, tknright);
-                            RESULT.agregarHijo(new Nodo("BOOLEANO", a, aleft, aright));
+                            RESULT = new Nodo(">=", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(c);
                         :}
-                |       para CONDICION:a parc 
+                |       CONDICION:a menorigual:tkn CONDICION:c
                         {:  
-                            RESULT = a;
+                            RESULT = new Nodo("<=", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
+                            RESULT.agregarHijo(c);
                         :}
                 |       VALOR:a 
                         {:  
                             RESULT = a;
                         :};
 
-SIGNO_REL       ::=     igualdad:tkn  
-                        {:  
-                            RESULT = new Nodo("==", tkn, tknleft, tknright);
-                        :}
-                |       desigualdad:tkn  
-                        {:  
-                            RESULT = new Nodo("!=", tkn, tknleft, tknright);
-                        :}
-                |       mayor:tkn  
-                        {:  
-                            RESULT = new Nodo(">", tkn, tknleft, tknright);
-                        :}
-                |       menor:tkn 
-                        {:  
-                            RESULT = new Nodo("<", tkn, tknleft, tknright);
-                        :}
-                |       mayorigual:tkn  
-                        {:  
-                            RESULT = new Nodo(">=", tkn, tknleft, tknright);
-                        :}
-                |       menorigual:tkn
-                        {:  
-                            RESULT = new Nodo("<=", tkn, tknleft, tknright);
-                        :};
-
-VALOR           ::=     VALOR:a mas:tkn VALOR:b
+VALOR           ::=     CONDICION:a mas:tkn CONDICION:b
                         {:  
                             RESULT = new Nodo("+", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(b);
                         :}
-                |       VALOR:a menos:tkn VALOR:b 
+                |       CONDICION:a menos:tkn CONDICION:b 
                         {:  
                             RESULT = new Nodo("-", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(b);
                         :}
-                |       VALOR:a por:tkn VALOR:b
+                |       CONDICION:a por:tkn CONDICION:b
                         {:  
                             RESULT = new Nodo("*", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(b);
                         :}
-                |       VALOR:a dividido:tkn VALOR:b  
+                |       CONDICION:a dividido:tkn CONDICION:b  
                         {:  
                             RESULT = new Nodo("/", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(b);
                         :}
-                |       VALOR:a pow:tkn VALOR:b 
+                |       CONDICION:a pow:tkn CONDICION:b 
                         {:  
                             RESULT = new Nodo("POW", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(b);
                         :}
-                |       VALOR:a para:tkn VALOR:b parc  
+                |       CONDICION:a para:tkn CONDICION:b parc  
                         {:  
                             RESULT = new Nodo("*", tkn, tknleft, tknright);
                             RESULT.agregarHijo(a);
                             RESULT.agregarHijo(b);
                         :}
-                |       para VALOR:a parc  
+                |       menos:tkn CONDICION:a   
                         {:  
-                            RESULT = a;
-                        :}
-                |       menos:a VALOR:b  
-                        {:  
-                            RESULT = new Nodo("-", a, aleft, aright);
-                            RESULT.agregarHijo(b);
+                            RESULT = new Nodo("-", tkn, tknleft, tknright);
+                            RESULT.agregarHijo(a);
                         :}
                 |       E:a  
                         {:  
@@ -275,7 +256,7 @@ E               ::=     booleano:a
                         :}
                 |       cadena:a
                         {: 
-                            RESULT = new Nodo("CADENA", a, aleft, aright); 
+                            RESULT = new Nodo("CADENA", a.replace("\"",""), aleft, aright); 
                         :}
                 |       identificador:a
                         {: 

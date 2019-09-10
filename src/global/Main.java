@@ -10,6 +10,12 @@ import analizadores.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -20,13 +26,14 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws FileNotFoundException {
-        interpretar("entrada.txt");
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        interpretar("entrada_tarea.txt");
     }
     
-    private static void interpretar(String path) throws FileNotFoundException {
-        File archivoSeleccionado = new File(path);
-        Scanner scanner = new Scanner(new FileReader(archivoSeleccionado));
+    private static void interpretar(String path) throws FileNotFoundException, IOException {
+        Stream<String> lines = Files.lines(Paths.get(path));
+        String content = lines.collect(Collectors.joining(System.lineSeparator())).replace("||", "¬¬");
+        Scanner scanner = new Scanner(new StringReader(content));
         Parser parser = new Parser(scanner);
         Nodo raiz;
         try {

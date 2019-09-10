@@ -13,10 +13,17 @@ public class Expresion {
     
     public Simbolo.EnumTipo tipo;
     public Object valor;
+    public String error;
 
     public Expresion(Simbolo.EnumTipo tipo, Object valor) {
         this.tipo = tipo;
         this.valor = valor;
+    }
+
+    public Expresion(Simbolo.EnumTipo tipo, Object valor, String error) {
+        this.tipo = tipo;
+        this.valor = valor;
+        this.error = error;
     }
     
 }
